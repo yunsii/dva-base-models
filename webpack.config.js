@@ -1,23 +1,56 @@
-"use strict";
+const moduleName = "dva-base-models";
+var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
-const webpack = require('webpack');
-
-const modName = "dva-base-models";
-
-module.exports = {
-    entry: "./src/",
-    output: {
-        filename: `./dist/${modName}.js`,
-        library: modName,
-        libraryTarget: 'umd',
-        umdNamedDefine: true
+var webpackConfig = {
+  mode: "production",
+  entry: "./src/index.ts",
+  output: {
+    filename: `${moduleName}.js`,
+    library: moduleName,
+    libraryTarget: 'umd',
+    umdNamedDefine: true
+  },
+  resolve: {
+    // Add `.ts` and `.tsx` as a resolvable extension.
+    extensions: [".ts", ".tsx", ".js"]
+  },
+  module: {
+    rules: [
+      // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
+      { test: /\.tsx?$/, loader: "ts-loader" }
+    ]
+  },
+  externals: {
+    react: {
+      root: 'React',
+      commonjs2: 'react',
+      commonjs: 'react',
+      amd: 'react'
     },
-    resolve: {
-        extensions: [".ts", ".js"]
+    'react-dom': {
+      root: 'ReactDOM',
+      commonjs2: 'react-dom',
+      commonjs: 'react-dom',
+      amd: 'react-dom'
     },
-    module: {
-        loaders: [
-            { test: /\.ts?$/, loader: "awesome-typescript-loader" }
-        ]
+    dva: {
+      root: 'dva',
+      commonjs2: 'dva',
+      commonjs: 'dva',
+      amd: 'dva'
+    },
+    antd: {
+      root: 'antd',
+      commonjs2: 'antd',
+      commonjs: 'antd',
+      amd: 'antd'
     }
+  },
 };
+
+if (process.env.NODE_ENV === 'production') {
+  webpackConfig.output.filename = 'geolocation.min.js';
+  webpackConfig.plugins.push(new UglifyJSPlugin());
+}
+
+module.exports = webpackConfig;
