@@ -1,4 +1,4 @@
-const moduleName = "dva-base-models";
+const moduleName = "index";
 var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 var webpackConfig = {
