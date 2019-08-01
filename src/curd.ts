@@ -130,11 +130,10 @@ export default (
       if (isResponseOk(response)) {
         message.success("更新成功");
 
-        const { data } = response;
-        const list = yield select((state: { [x: string]: { data: { list: any; }; }; }) => state[namespace].data.list);
+        const list = yield select((state: any) => state[namespace].data.list);
         yield put({
           type: "save",
-          payload: list.map((item: { id: any; }) => (item.id === data.id ? data : item)),
+          payload: list.map((item: any) => (item.id === id ? { ...item, ...payload } : item)),
         });
         callFunctionIfFunction(callback)();
         for (let actionName of afterUpdateActions) {

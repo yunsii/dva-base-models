@@ -42,6 +42,7 @@
 
 ## 更新日志
 
+* 1.0.4 fix: curdModel update by response's data
 * 1.0.3 `curdModel` 参数重命名
 * 1.0.2 添加参数默认值，添加 API 文档说明
 * 1.0.1 修复发布 1.0.0 后模块不可用的问题，导出 `curdModel`
