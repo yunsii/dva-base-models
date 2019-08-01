@@ -6,7 +6,7 @@
 
 ## curdModel 增删改查 model
 
-### curdModelConfig
+### config
 
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
@@ -14,7 +14,7 @@
 | getData | 配置如何从接口响应中得到对象详情 | (response) => ({}) | - |
 | isResponseOk | 判断接口是否成功 | (response) => boolean | - |
 
-### setCurdModel
+### set
 
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
@@ -43,3 +43,4 @@
 * 1.0.0 初始化
 * 1.0.1 修复发布 1.0.0 后模块不可用的问题，导出 `curdModel`
 * 1.0.2 添加参数默认值，添加 API 文档说明
+* 1.0.3 `curdModel` 参数重命名
