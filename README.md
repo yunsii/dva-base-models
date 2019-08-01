@@ -1,5 +1,7 @@
 # dva-base-models
 
+[![npm Version](https://img.shields.io/npm/v/dva-base-models.svg)](https://www.npmjs.com/package/dva-base-models)
+
 基于 dva 的基础 model 配置
 
 ## curdModel 增删改查 model
@@ -30,7 +32,7 @@
 | extraEffects | 额外的 effect ，可覆盖默认 effect | {} | {} |
 | extraReducers | 额外的 reducer ，可覆盖默认 reducer | {} | {} |
 
-使用方法
+### 使用方法
 
 * 配置 `getTableList` 、 `getData` 、 `isResponseOk`
 * 配置 `fetchMethod` 、 `detailMethod` 、 `createMethod` 、 `updateMethod` 、 `deleteMethod`
