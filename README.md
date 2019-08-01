@@ -34,13 +34,15 @@
 
 ### 使用方法
 
-* 配置 `getTableList` 、 `getData` 、 `isResponseOk`
-* 配置 `fetchMethod` 、 `detailMethod` 、 `createMethod` 、 `updateMethod` 、 `deleteMethod`
+* 配置 config ： `getTableList` 、 `getData` 、 `isResponseOk`
+* 配置 set ： `fetchMethod` 、 `detailMethod` 、 `createMethod` 、 `updateMethod` 、 `deleteMethod`
+
+具体使用参考 [Demo](https://github.com/theprimone/ant-design-pro-v2-plus/blob/master/src/base-models/curd.ts) ，配置 `curdModel.config` 后导出 `curdModel.set` 。
 
 
 ## 更新日志
 
-* 1.0.0 初始化
-* 1.0.1 修复发布 1.0.0 后模块不可用的问题，导出 `curdModel`
-* 1.0.2 添加参数默认值，添加 API 文档说明
 * 1.0.3 `curdModel` 参数重命名
+* 1.0.2 添加参数默认值，添加 API 文档说明
+* 1.0.1 修复发布 1.0.0 后模块不可用的问题，导出 `curdModel`
+* 1.0.0 初始化
