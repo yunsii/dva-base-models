@@ -7,27 +7,12 @@ const callFunctionIfFunction = (func: Function) => (...args: any) => {
   }
 };
 
-let getTableList = (action: any) => {
-  // 本地化更新数据，直接传入数组
-  const { payload } = action;
-  if (Array.isArray(payload)) {
-    return { list: payload };
-  }
-  // 请求接口响应数据处理
-  const { data } = payload;
-  return data.data
-    ? {
-      list: Array.isArray(data.data) ? data.data : [],
-      pagination: {
-        current: data.current_page,
-        pageSize: data.per_page,
-        total: data.total,
-      },
-    }
-    : { list: Array.isArray(data) ? data : [] };
-};
-let getData = (action: any) => {
-  const { data } = action.payload;
+let getTableList = (response: any) => ({
+  list: [] as any,
+  pagination: {},
+});
+let getData = (response: any) => {
+  const { data } = response;
   return data || {};
 };
 let isResponseOk = (response: any) => {
@@ -35,9 +20,9 @@ let isResponseOk = (response: any) => {
 };
 
 export interface ConfigOptions {
-  getTableList?: (action: any) => any;
-  getData?: (action: any) => any;
-  isResponseOk?: (response: any) => boolean;
+  getTableList: (response: any) => any;
+  getData: (response: any) => any;
+  isResponseOk: (response: any) => boolean;
 }
 
 export function config(options: ConfigOptions) {
@@ -72,18 +57,18 @@ export default (
   namespace: string,
   {
     fetchMethod,
-    afterFetchActions,
+    afterFetchActions = [],
     detailMethod,
-    afterDetailActions,
+    afterDetailActions = [],
     createMethod,
-    afterCreateActions,
+    afterCreateActions = [],
     updateMethod,
-    afterUpdateActions,
+    afterUpdateActions = [],
     deleteMethod,
-    afterDeleteActions,
-    extraState,
-    extraEffects,
-    extraReducers,
+    afterDeleteActions = [],
+    extraState = {},
+    extraEffects = {},
+    extraReducers = {},
   }: ModelConfig
 ) => ({
   namespace,
@@ -98,7 +83,6 @@ export default (
   },
 
   effects: {
-    ...extraEffects,
     *fetch({ payload }: any, { call, put }: any) {
       const response = yield call(fetchMethod, payload);
       yield put({
@@ -176,21 +160,22 @@ export default (
       }
       callFunctionIfFunction(callback)(response);
     },
+    ...extraEffects,
   },
 
   reducers: {
-    ...extraReducers,
     save(state: any, action: any) {
       return {
         ...state,
-        data: getTableList(action),
+        data: getTableList(action.payload),
       };
     },
     saveDetail(state: any, action: any) {
       return {
         ...state,
-        detail: getData(action),
+        detail: getData(action.payload),
       };
     },
+    ...extraReducers,
   },
 });
