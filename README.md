@@ -19,8 +19,10 @@
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | fetchMethod | 带查询参数的数据列表请求方法 | (paylaod) => Response | - |
+| isolatedGetTableList | 单独定义 model 的 getTableList | (Response) => data | - |
 | afterFetchActions | 查询后需要回调的 action 列表 | string[] | [] |
 | detailMethod | 对象详情请求方法 | (id) => Response | - |
+| isolatedGetData | 单独定义 model 的 getData | (Response) => data | - |
 | afterDetailActions | 详情后需要回调的 action 列表 | string[] | [] |
 | createMethod | 新建对象请求方法 | (paylaod) => Response | - |
 | afterCreateActions | 创建后需要回调的 action 列表 | string[] | [] |
@@ -42,6 +44,7 @@
 
 ## 更新日志
 
+* 1.0.5 feat: isolated config model's getTableList and getData
 * 1.0.4 fix: curdModel update by response's data
 * 1.0.3 `curdModel` 参数重命名
 * 1.0.2 添加参数默认值，添加 API 文档说明

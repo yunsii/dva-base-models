@@ -39,8 +39,10 @@ export function config(options: ConfigOptions) {
 
 export interface ModelConfig {
   fetchMethod?: Function;
+  isolatedGetTableList?: Function;
   afterFetchActions?: string[];
   detailMethod?: Function;
+  isolatedGetData?: Function;
   afterDetailActions?: string[];
   createMethod?: Function;
   afterCreateActions?: string[];
@@ -57,8 +59,10 @@ export default (
   namespace: string,
   {
     fetchMethod,
+    isolatedGetTableList,
     afterFetchActions = [],
     detailMethod,
+    isolatedGetData,
     afterDetailActions = [],
     createMethod,
     afterCreateActions = [],
@@ -166,13 +170,13 @@ export default (
     save(state: any, action: any) {
       return {
         ...state,
-        data: getTableList(action.payload),
+        data: isolatedGetTableList ? isolatedGetTableList(action.payload) : getTableList(action.payload),
       };
     },
     saveDetail(state: any, action: any) {
       return {
         ...state,
-        detail: getData(action.payload),
+        detail: isolatedGetData ? isolatedGetData(action.payload) : getData(action.payload),
       };
     },
     ...extraReducers,
