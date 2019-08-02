@@ -44,6 +44,7 @@
 
 ## 更新日志
 
+* 1.0.6 refactor: variables rename and getTableList and getData before put
 * 1.0.5 feat: isolated config model's getTableList and getData
 * 1.0.4 fix: curdModel update by response's data
 * 1.0.3 `curdModel` 参数重命名

@@ -90,8 +90,8 @@ export default (
     *fetch({ payload }: any, { call, put }: any) {
       const response = yield call(fetchMethod, payload);
       yield put({
-        type: "save",
-        payload: response,
+        type: "_save",
+        payload: isolatedGetTableList ? isolatedGetTableList(response) : getTableList(response),
       });
       if (isResponseOk(response)) {
         for (let actionName of afterFetchActions) {
@@ -104,8 +104,8 @@ export default (
     *detail({ id }: any, { call, put }: any) {
       const response = yield call(detailMethod, id);
       yield put({
-        type: "saveDetail",
-        payload: response,
+        type: "_saveDetail",
+        payload: isolatedGetData ? isolatedGetData(response) : getData(response),
       });
       if (isResponseOk(response)) {
         for (let actionName of afterDetailActions) {
@@ -134,10 +134,13 @@ export default (
       if (isResponseOk(response)) {
         message.success("更新成功");
 
-        const list = yield select((state: any) => state[namespace].data.list);
+        const { list, pagination } = yield select((state: any) => state[namespace].data);
         yield put({
-          type: "save",
-          payload: list.map((item: any) => (item.id === id ? { ...item, ...payload } : item)),
+          type: "_save",
+          payload: {
+            list: list.map((item: any) => (item.id === id ? { ...item, ...payload } : item)),
+            pagination,
+          }
         });
         callFunctionIfFunction(callback)();
         for (let actionName of afterUpdateActions) {
@@ -167,16 +170,16 @@ export default (
   },
 
   reducers: {
-    save(state: any, action: any) {
+    _save(state: any, action: any) {
       return {
         ...state,
-        data: isolatedGetTableList ? isolatedGetTableList(action.payload) : getTableList(action.payload),
+        data: { ...action.payload },
       };
     },
-    saveDetail(state: any, action: any) {
+    _saveDetail(state: any, action: any) {
       return {
         ...state,
-        detail: isolatedGetData ? isolatedGetData(action.payload) : getData(action.payload),
+        detail: { ...action.payload },
       };
     },
     ...extraReducers,
