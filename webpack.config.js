@@ -1,5 +1,4 @@
 const moduleName = "index";
-var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 var webpackConfig = {
   mode: "production",
@@ -47,10 +46,5 @@ var webpackConfig = {
     }
   },
 };
-
-if (process.env.NODE_ENV === 'production') {
-  webpackConfig.output.filename = 'geolocation.min.js';
-  webpackConfig.plugins.push(new UglifyJSPlugin());
-}
 
 module.exports = webpackConfig;
