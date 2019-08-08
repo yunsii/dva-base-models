@@ -87,53 +87,59 @@ export default (
   },
 
   effects: {
-    *fetch({ payload }: any, { call, put }: any) {
+    *fetch({ payload, onOk, onError }: any, { call, put }: any) {
       const response = yield call(fetchMethod, payload);
-      yield put({
-        type: "_save",
-        payload: isolatedGetTableList ? isolatedGetTableList(response) : getTableList(response),
-      });
       if (isResponseOk(response)) {
+        callFunctionIfFunction(onOk)();
+        yield put({
+          type: "_save",
+          payload: isolatedGetTableList ? isolatedGetTableList(response) : getTableList(response),
+        });
         for (let actionName of afterFetchActions) {
           yield put({
             type: actionName,
           });
         }
+      } else {
+        callFunctionIfFunction(onError)(response);
       }
     },
-    *detail({ id }: any, { call, put }: any) {
+    *detail({ id, onOk, onError }: any, { call, put }: any) {
       const response = yield call(detailMethod, id);
-      yield put({
-        type: "_saveDetail",
-        payload: isolatedGetData ? isolatedGetData(response) : getData(response),
-      });
       if (isResponseOk(response)) {
+        yield put({
+          type: "_saveDetail",
+          payload: isolatedGetData ? isolatedGetData(response) : getData(response),
+        });
+        callFunctionIfFunction(onOk)();
         for (let actionName of afterDetailActions) {
           yield put({
             type: actionName,
           });
         }
+      } else {
+        callFunctionIfFunction(onError)(response);
       }
     },
-    *create({ payload, callback }: any, { call, put }: any) {
+    *create({ payload, onOk, onError }: any, { call, put }: any) {
       const response = yield call(createMethod, payload);
       if (isResponseOk(response)) {
         message.success("创建成功");
-        callFunctionIfFunction(callback)();
+        callFunctionIfFunction(onOk)();
         for (let actionName of afterCreateActions) {
           yield put({
             type: actionName,
           });
         }
-        return;
+      } else {
+        callFunctionIfFunction(onError)(response);
       }
-      callFunctionIfFunction(callback)(response);
     },
-    *update({ id, payload, callback }: any, { call, put, select }: any) {
+    *update({ id, payload, onOk, onError }: any, { call, put, select }: any) {
       const response = yield call(updateMethod, id, payload);
       if (isResponseOk(response)) {
         message.success("更新成功");
-
+        callFunctionIfFunction(onOk)();
         const { list, pagination } = yield select((state: any) => state[namespace].data);
         yield put({
           type: "_save",
@@ -142,29 +148,29 @@ export default (
             pagination,
           }
         });
-        callFunctionIfFunction(callback)();
         for (let actionName of afterUpdateActions) {
           yield put({
             type: actionName,
           });
         }
-        return;
+      } else {
+        callFunctionIfFunction(onError)(response);
       }
-      callFunctionIfFunction(callback)(response);
     },
-    *delete({ id, callback }: any, { call, put }: any) {
+    *delete({ id, onOk, onError }: any, { call, put }: any) {
       const response = yield call(deleteMethod, id);
       if (isResponseOk(response)) {
         message.success("删除成功");
-        callFunctionIfFunction(callback)();
+        callFunctionIfFunction(onOk)();
         for (let actionName of afterDeleteActions) {
           yield put({
             type: actionName,
           });
         }
         return;
+      } else {
+        callFunctionIfFunction(onError)(response);
       }
-      callFunctionIfFunction(callback)(response);
     },
     ...extraEffects,
   },
