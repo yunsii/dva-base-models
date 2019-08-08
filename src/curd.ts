@@ -40,16 +40,23 @@ export function config(options: ConfigOptions) {
 export interface ModelConfig {
   fetchMethod?: Function;
   isolatedGetTableList?: Function;
+  parallelFetchActions?: string[];
   afterFetchActions?: string[];
+
   detailMethod?: Function;
   isolatedGetData?: Function;
+  parallelDetailActions?: string[];
   afterDetailActions?: string[];
+
   createMethod?: Function;
   afterCreateActions?: string[];
+
   updateMethod?: Function;
   afterUpdateActions?: string[];
+
   deleteMethod?: Function;
   afterDeleteActions?: string[];
+
   extraState?: Model["state"];
   extraEffects?: Model["effects"];
   extraReducers?: Model["reducers"];
@@ -60,16 +67,23 @@ export default (
   {
     fetchMethod,
     isolatedGetTableList,
+    parallelFetchActions = [],
     afterFetchActions = [],
+
     detailMethod,
     isolatedGetData,
+    parallelDetailActions = [],
     afterDetailActions = [],
+
     createMethod,
     afterCreateActions = [],
+
     updateMethod,
     afterUpdateActions = [],
+
     deleteMethod,
     afterDeleteActions = [],
+
     extraState = {},
     extraEffects = {},
     extraReducers = {},
@@ -88,6 +102,12 @@ export default (
 
   effects: {
     *fetch({ payload, onOk, onError }: any, { call, put }: any) {
+      for (let actionName of parallelFetchActions) {
+        yield put({
+          type: actionName,
+          payload,
+        });
+      }
       const response = yield call(fetchMethod, payload);
       if (isResponseOk(response)) {
         callFunctionIfFunction(onOk)();
@@ -105,6 +125,12 @@ export default (
       }
     },
     *detail({ id, onOk, onError }: any, { call, put }: any) {
+      for (let actionName of parallelDetailActions) {
+        yield put({
+          type: actionName,
+          id,
+        });
+      }
       const response = yield call(detailMethod, id);
       if (isResponseOk(response)) {
         yield put({
