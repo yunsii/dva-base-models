@@ -20,9 +20,11 @@
 | --- | --- | --- | --- |
 | fetchMethod | 带查询参数的数据列表请求方法 | (paylaod) => Response | - |
 | isolatedGetTableList | 单独定义 model 的 getTableList | (Response) => data | - |
+| parallelFetchActions | 与查询并行的 action 列表 | string[] | [] |
 | afterFetchActions | 查询后需要回调的 action 列表 | string[] | [] |
 | detailMethod | 对象详情请求方法 | (id) => Response | - |
 | isolatedGetData | 单独定义 model 的 getData | (Response) => data | - |
+| parallelFetchActions | 与详情并行的 action 列表 | string[] | [] |
 | afterDetailActions | 详情后需要回调的 action 列表 | string[] | [] |
 | createMethod | 新建对象请求方法 | (paylaod) => Response | - |
 | afterCreateActions | 创建后需要回调的 action 列表 | string[] | [] |
