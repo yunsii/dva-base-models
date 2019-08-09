@@ -24,7 +24,7 @@
 | afterFetchActions | 查询后需要回调的 action 列表 | string[] | [] |
 | detailMethod | 对象详情请求方法 | (id) => Response | - |
 | isolatedGetData | 单独定义 model 的 getData | (Response) => data | - |
-| parallelFetchActions | 与详情并行的 action 列表 | string[] | [] |
+| parallelDetailActions | 与详情并行的 action 列表 | string[] | [] |
 | afterDetailActions | 详情后需要回调的 action 列表 | string[] | [] |
 | createMethod | 新建对象请求方法 | (paylaod) => Response | - |
 | afterCreateActions | 创建后需要回调的 action 列表 | string[] | [] |
@@ -46,8 +46,12 @@
 
 ## 更新日志
 
-* 1.0.6 refactor: variables rename and getTableList and getData before put
-* 1.0.5 feat: isolated config model's getTableList and getData
+* 1.1.7 feat: `parallelFetchActions` and `parallelDetailActions`
+* 1.1.6 refactor: replace `callback` with `onOk` and `onError`
+* next should be 1.1.0, but already publish \_(:3J∠)\_. keep go on anyway
+* 1.0.6 refactor: variables rename and `getTableList` and `getData` before `put`
+* 1.0.6 refactor: variables rename and `getTableList` and `getData` before `put`
+* 1.0.5 feat: `isolated` config model's `getTableList` and `getData`
 * 1.0.4 fix: curdModel update by response's data
 * 1.0.3 `curdModel` 参数重命名
 * 1.0.2 添加参数默认值，添加 API 文档说明
