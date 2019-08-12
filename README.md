@@ -1,6 +1,11 @@
 # dva-base-models
 
+[![GitHub license](https://img.shields.io/github/license/theprimone/dva-base-models.svg)](https://github.com/theprimone/dva-base-models/blob/master/LICENSE)
 [![npm Version](https://img.shields.io/npm/v/dva-base-models.svg)](https://www.npmjs.com/package/dva-base-models)
+[![GitHub stars](https://img.shields.io/github/stars/theprimone/dva-base-models.svg)](https://github.com/theprimone/dva-base-models/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/theprimone/dva-base-models.svg)](https://github.com/theprimone/dva-base-models/issues)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/theprimone/dva-base-models.svg)](https://github.com/theprimone/dva-base-models/commits/master)
+
 
 基于 dva 的基础 model 配置
 
