@@ -1,8 +1,8 @@
 import { message } from "antd";
-import { Model } from "dva";
+import { Model, EffectsCommandMap } from "dva";
 
 const callFunctionIfFunction = (func: Function) => (...args: any) => {
-  if (func) {
+  if (typeof func === "function") {
     func(...args);
   }
 };
@@ -34,6 +34,15 @@ export function config(options: ConfigOptions) {
   }
   if (options.isResponseOk !== undefined) {
     isResponseOk = options.isResponseOk;
+  }
+}
+
+function* putGenerator(put: EffectsCommandMap["put"], actions: string[], extra: any = {}) {
+  for (const actionName of actions) {
+    yield put({
+      type: actionName,
+      ...extra,
+    });
   }
 }
 
@@ -101,13 +110,8 @@ export default (
   },
 
   effects: {
-    *fetch({ payload, onOk, onError }: any, { call, put }: any) {
-      for (let actionName of parallelFetchActions) {
-        yield put({
-          type: actionName,
-          payload,
-        });
-      }
+    *fetch({ payload, onOk, onError, onComplete }: any, { call, put }: EffectsCommandMap) {
+      yield putGenerator(put, parallelFetchActions, { payload });
       const response = yield call(fetchMethod, payload);
       if (isResponseOk(response)) {
         callFunctionIfFunction(onOk)();
@@ -123,14 +127,10 @@ export default (
       } else {
         callFunctionIfFunction(onError)(response);
       }
+      callFunctionIfFunction(onComplete)(response);
     },
-    *detail({ id, onOk, onError }: any, { call, put }: any) {
-      for (let actionName of parallelDetailActions) {
-        yield put({
-          type: actionName,
-          id,
-        });
-      }
+    *detail({ id, onOk, onError, onComplete }: any, { call, put }: EffectsCommandMap) {
+      yield putGenerator(put, parallelDetailActions, { id });
       const response = yield call(detailMethod, id);
       if (isResponseOk(response)) {
         yield put({
@@ -138,30 +138,24 @@ export default (
           payload: isolatedGetData ? isolatedGetData(response) : getData(response),
         });
         callFunctionIfFunction(onOk)();
-        for (let actionName of afterDetailActions) {
-          yield put({
-            type: actionName,
-          });
-        }
+        yield putGenerator((put as any).resolve, afterDetailActions);
       } else {
         callFunctionIfFunction(onError)(response);
       }
+      callFunctionIfFunction(onComplete)(response);
     },
-    *create({ payload, onOk, onError }: any, { call, put }: any) {
+    *create({ payload, onOk, onError, onComplete }: any, { call, put }: EffectsCommandMap) {
       const response = yield call(createMethod, payload);
       if (isResponseOk(response)) {
         message.success("创建成功");
         callFunctionIfFunction(onOk)();
-        for (let actionName of afterCreateActions) {
-          yield put({
-            type: actionName,
-          });
-        }
+        yield putGenerator((put as any).resolve, afterCreateActions);
       } else {
         callFunctionIfFunction(onError)(response);
       }
+      callFunctionIfFunction(onComplete)(response);
     },
-    *update({ id, payload, onOk, onError }: any, { call, put, select }: any) {
+    *update({ id, payload, onOk, onError, onComplete }: any, { call, put, select }: EffectsCommandMap) {
       const response = yield call(updateMethod, id, payload);
       if (isResponseOk(response)) {
         message.success("更新成功");
@@ -174,29 +168,23 @@ export default (
             pagination,
           }
         });
-        for (let actionName of afterUpdateActions) {
-          yield put({
-            type: actionName,
-          });
-        }
+        yield putGenerator((put as any).resolve, afterUpdateActions);
       } else {
         callFunctionIfFunction(onError)(response);
       }
+      callFunctionIfFunction(onComplete)(response);
     },
-    *delete({ id, onOk, onError }: any, { call, put }: any) {
+    *delete({ id, onOk, onError, onComplete }: any, { call, put }: EffectsCommandMap) {
       const response = yield call(deleteMethod, id);
       if (isResponseOk(response)) {
         message.success("删除成功");
         callFunctionIfFunction(onOk)();
-        for (let actionName of afterDeleteActions) {
-          yield put({
-            type: actionName,
-          });
-        }
+        yield putGenerator((put as any).resolve, afterDeleteActions);
         return;
       } else {
         callFunctionIfFunction(onError)(response);
       }
+      callFunctionIfFunction(onComplete)(response);
     },
     ...extraEffects,
   },
