@@ -1,6 +1,6 @@
 {
   "name": "dva-base-models",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "base models config for dva",
   "main": "./dist/index.js",
   "scripts": {
