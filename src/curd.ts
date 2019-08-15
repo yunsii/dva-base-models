@@ -125,44 +125,44 @@ export default (
     *fetch({ payload, onOk, onError, onComplete }: any, { call, put }: EffectsCommandMap) {
       yield putGenerator(put, parallelFetchActions, { payload });
       const response = yield call(fetchMethod, payload);
-      const coreFlow = function* () {
+      const coreFlow = function*() {
         yield put({
           type: "_save",
           payload: isolatedGetTableList ? isolatedGetTableList(response) : getTableList(response),
         });
         callFunctionIfFunction(onOk)();
         yield putGenerator((put as any).resolve, afterFetchActions);
-      }
+      };
       yield afterResponse(response, coreFlow, onError, onComplete);
     },
 
     *detail({ id, onOk, onError, onComplete }: any, { call, put }: EffectsCommandMap) {
       yield putGenerator(put, parallelDetailActions, { id });
       const response = yield call(detailMethod, id);
-      const coreFlow = function* () {
+      const coreFlow = function*() {
         yield put({
           type: "_saveDetail",
           payload: isolatedGetData ? isolatedGetData(response) : getData(response),
         });
         callFunctionIfFunction(onOk)();
         yield putGenerator((put as any).resolve, afterDetailActions);
-      }
+      };
       yield afterResponse(response, coreFlow, onError, onComplete);
     },
 
     *create({ payload, onOk, onError, onComplete }: any, { call, put }: EffectsCommandMap) {
       const response = yield call(createMethod, payload);
-      const coreFlow = function* () {
+      const coreFlow = function*() {
         message.success(locale.createOk);
         callFunctionIfFunction(onOk)();
         yield putGenerator((put as any).resolve, afterCreateActions);
-      }
+      };
       yield afterResponse(response, coreFlow, onError, onComplete);
     },
 
     *update({ id, payload, onOk, onError, onComplete }: any, { call, put, select }: EffectsCommandMap) {
       const response = yield call(updateMethod, id, payload);
-      const coreFlow = function* () {
+      const coreFlow = function*() {
         message.success(locale.updateOk);
         callFunctionIfFunction(onOk)();
         const { list, pagination } = yield select((state: any) => state[namespace].data);
@@ -174,17 +174,17 @@ export default (
           }
         });
         yield putGenerator((put as any).resolve, afterUpdateActions);
-      }
+      };
       yield afterResponse(response, coreFlow, onError, onComplete);
     },
 
     *delete({ id, onOk, onError, onComplete }: any, { call, put }: EffectsCommandMap) {
       const response = yield call(deleteMethod, id);
-      const coreFlow = function* () {
+      const coreFlow = function*() {
         message.success(locale.deleteOk);
         callFunctionIfFunction(onOk)();
         yield putGenerator((put as any).resolve, afterDeleteActions);
-      }
+      };
       yield afterResponse(response, coreFlow, onError, onComplete);
     },
 

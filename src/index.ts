@@ -10,4 +10,4 @@ export const curdModel: CurdModel = {
   set: setCurdModel,
 };
 
-export { setLocale } from './locale';
+export { setLocale } from "./locale";

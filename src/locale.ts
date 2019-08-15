@@ -2,12 +2,12 @@ export const locale = {
   createOk: "创建成功",
   updateOk: "更新成功",
   deleteOk: "删除成功",
-}
+};
 
 export interface Locale {
-  createOk?: string,
-  updateOk?: string,
-  deleteOk?: string,
+  createOk?: string;
+  updateOk?: string;
+  deleteOk?: string;
 }
 
 function isValidOption(option: string) {
