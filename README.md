@@ -51,6 +51,7 @@
 
 ## 更新日志
 
+* 1.1.8 refactor: extract function `putGenerator` and `afterResponse`
 * 1.1.7 feat: `parallelFetchActions` and `parallelDetailActions`
 * 1.1.6 refactor: replace `callback` with `onOk` and `onError`
 * next should be 1.1.0, but already publish \_(:3J∠)\_. keep go on anyway
