@@ -1,5 +1,6 @@
 import { message } from "antd";
 import { Model, EffectsCommandMap } from "dva";
+import { locale } from "./locale";
 
 const callFunctionIfFunction = (func: Function) => (...args: any) => {
   if (typeof func === "function") {
@@ -25,7 +26,7 @@ export interface ConfigOptions {
   isResponseOk: (response: any) => boolean;
 }
 
-export function config(options: ConfigOptions) {
+export function methodConfig(options: ConfigOptions) {
   if (options.getTableList !== undefined) {
     getTableList = options.getTableList;
   }
@@ -44,6 +45,15 @@ function* putGenerator(put: EffectsCommandMap["put"], actions: string[], extra: 
       ...extra,
     });
   }
+}
+
+function* afterResponse(response: any, coreFlow: Function, onError: Function, onComplete: Function) {
+  if (isResponseOk(response)) {
+    yield coreFlow();
+  } else {
+    callFunctionIfFunction(onError)(response);
+  }
+  callFunctionIfFunction(onComplete)(response);
 }
 
 export interface ModelConfig {
@@ -105,7 +115,9 @@ export default (
       list: [],
       pagination: {},
     },
+
     detail: {},
+
     ...extraState,
   },
 
@@ -113,52 +125,45 @@ export default (
     *fetch({ payload, onOk, onError, onComplete }: any, { call, put }: EffectsCommandMap) {
       yield putGenerator(put, parallelFetchActions, { payload });
       const response = yield call(fetchMethod, payload);
-      if (isResponseOk(response)) {
-        callFunctionIfFunction(onOk)();
+      const coreFlow = function* () {
         yield put({
           type: "_save",
           payload: isolatedGetTableList ? isolatedGetTableList(response) : getTableList(response),
         });
-        for (let actionName of afterFetchActions) {
-          yield put({
-            type: actionName,
-          });
-        }
-      } else {
-        callFunctionIfFunction(onError)(response);
+        callFunctionIfFunction(onOk)();
+        yield putGenerator((put as any).resolve, afterFetchActions);
       }
-      callFunctionIfFunction(onComplete)(response);
+      yield afterResponse(response, coreFlow, onError, onComplete);
     },
+
     *detail({ id, onOk, onError, onComplete }: any, { call, put }: EffectsCommandMap) {
       yield putGenerator(put, parallelDetailActions, { id });
       const response = yield call(detailMethod, id);
-      if (isResponseOk(response)) {
+      const coreFlow = function* () {
         yield put({
           type: "_saveDetail",
           payload: isolatedGetData ? isolatedGetData(response) : getData(response),
         });
         callFunctionIfFunction(onOk)();
         yield putGenerator((put as any).resolve, afterDetailActions);
-      } else {
-        callFunctionIfFunction(onError)(response);
       }
-      callFunctionIfFunction(onComplete)(response);
+      yield afterResponse(response, coreFlow, onError, onComplete);
     },
+
     *create({ payload, onOk, onError, onComplete }: any, { call, put }: EffectsCommandMap) {
       const response = yield call(createMethod, payload);
-      if (isResponseOk(response)) {
-        message.success("创建成功");
+      const coreFlow = function* () {
+        message.success(locale.createOk);
         callFunctionIfFunction(onOk)();
         yield putGenerator((put as any).resolve, afterCreateActions);
-      } else {
-        callFunctionIfFunction(onError)(response);
       }
-      callFunctionIfFunction(onComplete)(response);
+      yield afterResponse(response, coreFlow, onError, onComplete);
     },
+
     *update({ id, payload, onOk, onError, onComplete }: any, { call, put, select }: EffectsCommandMap) {
       const response = yield call(updateMethod, id, payload);
-      if (isResponseOk(response)) {
-        message.success("更新成功");
+      const coreFlow = function* () {
+        message.success(locale.updateOk);
         callFunctionIfFunction(onOk)();
         const { list, pagination } = yield select((state: any) => state[namespace].data);
         yield put({
@@ -169,23 +174,20 @@ export default (
           }
         });
         yield putGenerator((put as any).resolve, afterUpdateActions);
-      } else {
-        callFunctionIfFunction(onError)(response);
       }
-      callFunctionIfFunction(onComplete)(response);
+      yield afterResponse(response, coreFlow, onError, onComplete);
     },
+
     *delete({ id, onOk, onError, onComplete }: any, { call, put }: EffectsCommandMap) {
       const response = yield call(deleteMethod, id);
-      if (isResponseOk(response)) {
-        message.success("删除成功");
+      const coreFlow = function* () {
+        message.success(locale.deleteOk);
         callFunctionIfFunction(onOk)();
         yield putGenerator((put as any).resolve, afterDeleteActions);
-        return;
-      } else {
-        callFunctionIfFunction(onError)(response);
       }
-      callFunctionIfFunction(onComplete)(response);
+      yield afterResponse(response, coreFlow, onError, onComplete);
     },
+
     ...extraEffects,
   },
 
@@ -196,12 +198,14 @@ export default (
         data: { ...action.payload },
       };
     },
+
     _saveDetail(state: any, action: any) {
       return {
         ...state,
         detail: { ...action.payload },
       };
     },
+
     ...extraReducers,
   },
 });

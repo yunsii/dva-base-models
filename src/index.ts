@@ -1,4 +1,4 @@
-import setCurdModel, { config, ConfigOptions, ModelConfig } from "./curd";
+import setCurdModel, { methodConfig, ConfigOptions, ModelConfig } from "./curd";
 
 export interface CurdModel {
   config: (options: ConfigOptions) => void;
@@ -6,6 +6,8 @@ export interface CurdModel {
 }
 
 export const curdModel: CurdModel = {
-  config,
+  config: methodConfig,
   set: setCurdModel,
 };
+
+export { setLocale } from './locale';
