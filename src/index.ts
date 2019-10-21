@@ -9,5 +9,3 @@ export const curdModel: CurdModel = {
   config: methodConfig,
   set: setCurdModel,
 };
-
-export { setLocale } from "./locale";
