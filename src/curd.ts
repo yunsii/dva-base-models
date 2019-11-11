@@ -6,7 +6,7 @@ const callFunctionIfFunction = (func: Function) => (...args: any) => {
   }
 };
 
-let getTableList = (response: any) => ({
+let getList = (response: any) => ({
   list: [] as any,
   pagination: {},
 });
@@ -19,14 +19,14 @@ let isResponseOk = (response: any) => {
 };
 
 export interface ConfigOptions {
-  getTableList: (response: any) => any;
+  getList: (response: any) => any;
   getData: (response: any) => any;
   isResponseOk: (response: any) => boolean;
 }
 
 export function methodConfig(options: ConfigOptions) {
-  if (options.getTableList !== undefined) {
-    getTableList = options.getTableList;
+  if (options.getList !== undefined) {
+    getList = options.getList;
   }
   if (options.getData !== undefined) {
     getData = options.getData;
@@ -56,7 +56,7 @@ function* afterResponse(response: any, coreFlow: Function, onError: Function, on
 
 export interface ModelConfig {
   fetchMethod?: Function;
-  isolatedGetTableList?: Function;
+  isolatedGetList?: Function;
   parallelFetchActions?: string[];
   afterFetchActions?: string[];
 
@@ -83,7 +83,7 @@ export default (
   namespace: string,
   {
     fetchMethod,
-    isolatedGetTableList,
+    isolatedGetList,
     parallelFetchActions = [],
     afterFetchActions = [],
 
@@ -126,7 +126,7 @@ export default (
       const coreFlow = function* () {
         yield put({
           type: "_save",
-          payload: isolatedGetTableList ? isolatedGetTableList(response) : getTableList(response),
+          payload: isolatedGetList ? isolatedGetList(response) : getList(response),
         });
         callFunctionIfFunction(onOk)();
         yield putGenerator((put as any).resolve, afterFetchActions, { response });
