@@ -130,7 +130,7 @@ export default (
         });
         callFunctionIfFunction(onOk)();
         yield putGenerator((put as any).resolve, afterFetchActions, { response });
-      };
+      }
       yield afterResponse(response, coreFlow, onError, onComplete);
     },
 
@@ -144,7 +144,7 @@ export default (
         });
         callFunctionIfFunction(onOk)();
         yield putGenerator((put as any).resolve, afterDetailActions, { response });
-      };
+      }
       yield afterResponse(response, coreFlow, onError, onComplete);
     },
 
@@ -153,7 +153,7 @@ export default (
       function* coreFlow() {
         callFunctionIfFunction(onOk)();
         yield putGenerator((put as any).resolve, afterCreateActions, { response });
-      };
+      }
       yield afterResponse(response, coreFlow, onError, onComplete);
     },
 
@@ -170,7 +170,7 @@ export default (
           }
         });
         yield putGenerator((put as any).resolve, afterUpdateActions, { response });
-      };
+      }
       yield afterResponse(response, coreFlow, onError, onComplete);
     },
 
@@ -179,7 +179,7 @@ export default (
       function* coreFlow() {
         callFunctionIfFunction(onOk)();
         yield putGenerator((put as any).resolve, afterDeleteActions, { response });
-      };
+      }
       yield afterResponse(response, coreFlow, onError, onComplete);
     },
 
