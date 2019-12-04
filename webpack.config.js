@@ -6,6 +6,7 @@ var webpackConfig = {
   entry: "./src/index.ts",
   output: {
     filename: `${moduleName}.js`,
+    sourceMapFilename: `${moduleName}.js.map`,
     library: moduleName,
     libraryTarget: 'umd',
     umdNamedDefine: true
