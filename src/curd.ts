@@ -1,7 +1,11 @@
 import { Model, EffectsCommandMap } from "dva";
 
+function isFunction(func: any) {
+  return typeof func === "function";
+}
+
 const callFunctionIfFunction = (func: Function) => (...args: any) => {
-  if (typeof func === "function") {
+  if (isFunction(func)) {
     func(...args);
   }
 };
@@ -10,13 +14,8 @@ let getList = (response: any) => ({
   list: [] as any,
   pagination: {},
 });
-let getData = (response: any) => {
-  const { data } = response;
-  return data || {};
-};
-let isResponseOk = (response: any) => {
-  return response.status_code === 200;
-};
+let getData = (response: any) => ({});
+let isResponseOk = (response: any) => true;
 
 export interface ConfigOptions {
   getList: (response: any) => any;
@@ -25,15 +24,18 @@ export interface ConfigOptions {
 }
 
 export function methodConfig(options: ConfigOptions) {
-  if (options.getList !== undefined) {
-    getList = options.getList;
+  if (!isFunction(options.getList)) {
+    throw new TypeError("getList is not a Function.");
   }
-  if (options.getData !== undefined) {
-    getData = options.getData;
+  if (isFunction(options.getData)) {
+    throw new TypeError("getData is not a Function.");
   }
-  if (options.isResponseOk !== undefined) {
-    isResponseOk = options.isResponseOk;
+  if (isFunction(options.isResponseOk)) {
+    throw new TypeError("isResponseOk is not a Function.");
   }
+  getList = options.getList;
+  getData = options.getData;
+  isResponseOk = options.isResponseOk;
 }
 
 function* putGenerator(put: EffectsCommandMap["put"], actions: string[], extra: any = {}) {
