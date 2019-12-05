@@ -27,10 +27,10 @@ export function methodConfig(options: ConfigOptions) {
   if (!isFunction(options.getList)) {
     throw new TypeError("getList is not a Function.");
   }
-  if (isFunction(options.getData)) {
+  if (!isFunction(options.getData)) {
     throw new TypeError("getData is not a Function.");
   }
-  if (isFunction(options.isResponseOk)) {
+  if (!isFunction(options.isResponseOk)) {
     throw new TypeError("isResponseOk is not a Function.");
   }
   getList = options.getList;
