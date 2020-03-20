@@ -46,4 +46,4 @@
 * 配置 config ： `getList` 、 `getData` 、 `isResponseOk`
 * 配置 set ： `fetchMethod` 、 `detailMethod` 、 `createMethod` 、 `updateMethod` 、 `deleteMethod`
 
-具体使用参考 [Demo](https://github.com/theprimone/ant-design-pro-v2-plus/blob/master/src/base-models/curd.ts) ，配置 `curdModel.config` 后导出 `curdModel.set` 。
+具体使用参考 [Demo](https://github.com/zpr1g/ant-design-pro-plus/blob/v2/src/base-models/curd.ts) ，配置 `curdModel.config` 后导出 `curdModel.set` 。
